@@ -22,7 +22,6 @@ public class GameEvents : MonoBehaviour
     public event Action<GameObject> onTriggerUnitSelected;
     public void TriggerUnitSelected(GameObject gameObject) {
         if (onTriggerUnitSelected != null) {
-            Debug.Log("Unit selected");
             onTriggerUnitSelected(gameObject);
         }
     }
@@ -31,8 +30,15 @@ public class GameEvents : MonoBehaviour
     public event Action<GameObject> onTriggerUnitDeselected;
     public void TriggerUnitDeselected(GameObject gameObject) {
         if (onTriggerUnitDeselected != null) {
-            Debug.Log("Unit deselected");
             onTriggerUnitDeselected(gameObject);
+        }
+    }
+
+    // Event for telling that a Gameobject was hit
+    public event Action<GameObject> onTriggerGameObjectHit;
+    public void TriggerGameObjectHit(GameObject gameObject) {
+        if (onTriggerGameObjectHit != null) {
+            onTriggerGameObjectHit(gameObject);
         }
     }
 }

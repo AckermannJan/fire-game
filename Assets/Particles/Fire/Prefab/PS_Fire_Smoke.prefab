@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe0084e217654240ab47a5533f7f2e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  progress: 0.444
+  progress: 0
   fire:
   - {fileID: 198205007009897148}
   - {fileID: 198260517930635872}

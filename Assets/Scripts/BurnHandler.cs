@@ -15,6 +15,11 @@ public class BurnHandler : MonoBehaviour
     public AnimationCurve chanceToSpread;
     public Burn []burnList;
 
+    // Water variables
+    private bool hitByWater;
+    private float hitByWaterResetTime = 1f;
+    private float elapsedWaterTime;
+
     private bool burnedDown;
     private float burnTimePassed;
     private float timeInCurve;
@@ -32,9 +37,11 @@ public class BurnHandler : MonoBehaviour
     void Start() {
         // Events
         GameEvents.current.onIgniteGameObject += OnIgniteGameObject;
+        GameEvents.current.onTriggerGameObjectHit += onTriggerGameObjectHit;
 
         InvokeRepeating("tryToIgnite", 0f, 1.0f);
         originalBurnTime = burnTime;
+        hitByWater = false;
     }
 
     void Update() {
@@ -43,6 +50,7 @@ public class BurnHandler : MonoBehaviour
             continueBurn();
             updateHealthBar();
             particleHandler();
+            checkIfWaterHits();
             AmountBurningItems = getAmountOfBurningItems();
             if (transform.name == "SM_Env_Tree_01 (2)") {
                 Debug.Log(AmountBurningItems);
@@ -87,7 +95,7 @@ public class BurnHandler : MonoBehaviour
     }
 
     private void tryToIgnite() {
-        if(burning) {
+        if(burning && !hitByWater) {
             float test = Random.Range(0, 100);
             timeInCurve = burnTimePassed / burnTime;
             chanceToIgnite = chanceToSpread.Evaluate(timeInCurve) * 100;
@@ -99,9 +107,11 @@ public class BurnHandler : MonoBehaviour
     }
 
     private void checkIfBurned() {
-        if(timeInCurve > 1f) {
+        if(timeInCurve > 1f || timeInCurve < 0f) {
             burning = false;
             burnedDown = true;
+            timeInCurve = 0;
+            particleHandler();
         }
     }
 
@@ -162,6 +172,24 @@ public class BurnHandler : MonoBehaviour
         }
     }
 
+    private void onTriggerGameObjectHit(GameObject gameObject) {
+        if(gameObject.transform == transform) {
+            Debug.Log("Hit");
+            burnTimePassed -= 0.01f;
+            timeInCurve = burnTimePassed / burnTime;
+            elapsedWaterTime = 0;
+            hitByWater = true;
+        }
+    }
+
+    private void checkIfWaterHits() {
+        elapsedWaterTime += Time.deltaTime;
+        if(elapsedWaterTime > hitByWaterResetTime) {
+            Debug.Log("Out");
+            hitByWater = false;
+        }
+    }
+
     private void particleHandler() {
         GameObject fires = transform.GetChild(1).gameObject;
         foreach (Transform fire in fires.transform) {
@@ -171,5 +199,6 @@ public class BurnHandler : MonoBehaviour
 
     private void OnDestroy() {
         GameEvents.current.onIgniteGameObject -= OnIgniteGameObject;
+        GameEvents.current.onTriggerGameObjectHit -= onTriggerGameObjectHit;
     }
 }

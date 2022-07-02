@@ -16,10 +16,10 @@ public class ColliderEvents : MonoBehaviour
         collisionEvents = new List<ParticleCollisionEvent>();
     }
 
-    void OnParticleCollision(GameObject other)
+    void OnParticleCollision(GameObject gameObject)
     {
-        if (other.layer == Mathf.RoundToInt(Mathf.Log(colliderMask.value, 2))) {
-            Debug.Log("Touched a burnable item");
+        if (gameObject.layer == Mathf.RoundToInt(Mathf.Log(colliderMask.value, 2))) {
+            GameEvents.current.TriggerGameObjectHit(gameObject);
         }
     }
 }
