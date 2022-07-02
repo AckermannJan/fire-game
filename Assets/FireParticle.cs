@@ -24,6 +24,7 @@ public class FireParticle : MonoBehaviour {
 
     // Update is called once per frame
     void Update() {
+        // White smoke
         if((progress > 0f && progress < .2f) || (progress > .8f && progress < .9f)) {
             whiteSmokeAlpha = Mathf.Lerp(0f, 1f, whiteSmokeTime);
             whiteSmokeTime = Mathf.Clamp(whiteSmokeTime + Time.deltaTime, 0f, 1f);
